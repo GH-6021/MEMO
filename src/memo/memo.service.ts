@@ -12,25 +12,26 @@ constructor(
     private memoRepository:Repository<Memo>,
 ){}
 
-async create(memoPostReqDto:MemoPostReqDto): Promise<Memo>{
+async create(memoPostReqDto:MemoPostReqDto): Promise<{message: string; data: Memo;}>{
     const memo = this.memoRepository.create(memoPostReqDto);
-    return await this.memoRepository.save(memo);
+    await this.memoRepository.save(memo);
+    return {message: '메모 생성 성공', data: memo};
 }
 
-async findAll():Promise<Memo[]>{
+async findAll():Promise<{message: string; data: Memo[];}>{
     const memoes = await this.memoRepository.find();
     if(!memoes.length){
         throw new NotFoundException('메모를 찾을 수 없습니다.');
     }
-    return memoes;
+    return { message: '메모 전체목록 찾기 성공', data: memoes };
 }
 
-async findOne(id:number):Promise<Memo>{
+async findOne(id:number):Promise<{message: string; data: Memo;}>{
     const memo = await this.memoRepository.findOneBy({id});
     if(!memo){
         throw new NotFoundException(id+' 메모를 찾을 수 없습니다.');
     }
-    return memo;
+    return { message: id+'메모 찾기 성공', data: memo };
 }
 
 async update(id:number,updateMemoDto:UpdateMemoDto){
@@ -42,6 +43,7 @@ async update(id:number,updateMemoDto:UpdateMemoDto){
     if(result.affected===0){
         throw new HttpException('메모 업데이트 실패',500);
     }
+    throw new HttpException({ message: '메모 업데이트 성공' }, 200);
 }
 
 async remove(id:number){
@@ -53,6 +55,7 @@ async remove(id:number){
     if (result.affected===0) {
         throw new HttpException('메모 삭제 실패', 500);
     }
+    throw new HttpException({ message: '메모 삭제 성공' }, 200);
 }
 
 
