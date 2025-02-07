@@ -10,7 +10,7 @@ import { HttpModule } from '@nestjs/axios';
   imports: [MemoModule, HttpModule,
     TypeOrmModule.forRoot({
       type: 'mariadb',
-      host: '127.0.0.1',
+      host: '58.231.192.207',
       port: 3306,
       username: 'test',
       password: 'test',
